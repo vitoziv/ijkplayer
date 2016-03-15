@@ -42,6 +42,8 @@ static const char *kIJKFFRequiredFFmpegVersion = "ff2.8--ijk0.4.4.1--dev0.3.3--r
 @property(nonatomic, readonly) NSDictionary *videoMeta;
 @property(nonatomic, readonly) NSDictionary *audioMeta;
 
+@property (nonatomic, strong) IJKAudioKit *audioKit;
+
 @end
 
 @implementation IJKFFMoviePlayerController {
@@ -216,7 +218,8 @@ void IJKFFIOStatCompleteRegister(void (*cb)(const char *url,
         [IJKFFMoviePlayerController setLogLevel:k_IJK_LOG_SILENT];
 #endif
         // init audio sink
-        [[IJKAudioKit sharedInstance] setupAudioSession];
+        _audioKit = [IJKAudioKit new];
+        [_audioKit setupAudioSession];
 
         [options applyTo:_mediaPlayer];
         _pauseInBackground = NO;
@@ -1349,12 +1352,12 @@ static int ijkff_inject_callback(void *opaque, int message, void *data, size_t d
                     break;
             }
             [self pause];
-            [[IJKAudioKit sharedInstance] setActive:NO];
+            [self.audioKit setActive:NO];
             break;
         }
         case AVAudioSessionInterruptionTypeEnded: {
             NSLog(@"IJKFFMoviePlayerController:audioSessionInterrupt: end\n");
-            [[IJKAudioKit sharedInstance] setActive:YES];
+            [self.audioKit setActive:YES];
             if (_playingBeforeInterruption) {
                 [self play];
             }

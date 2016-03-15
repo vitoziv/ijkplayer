@@ -28,14 +28,8 @@
     BOOL _audioSessionInitialized;
 }
 
-+ (IJKAudioKit *)sharedInstance
-{
-    static IJKAudioKit *sAudioKit = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sAudioKit = [[IJKAudioKit alloc] init];
-    });
-    return sAudioKit;
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setupAudioSession

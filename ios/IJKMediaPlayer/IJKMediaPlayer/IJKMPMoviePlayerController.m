@@ -24,6 +24,12 @@
 #import "IJKAudioKit.h"
 #import "IJKNotificationManager.h"
 
+@interface IJKMPMoviePlayerController ()
+
+@property (nonatomic, strong) IJKAudioKit *audioKit;
+
+@end
+
 @implementation IJKMPMoviePlayerController
 {
     IJKNotificationManager *_notificationManager;
@@ -56,7 +62,8 @@
         _notificationManager = [[IJKNotificationManager alloc] init];
         [self IJK_installMovieNotificationObservers];
 
-        [[IJKAudioKit sharedInstance] setupAudioSession];
+        _audioKit = [[IJKAudioKit alloc] init];
+        [_audioKit setupAudioSession];
         
         _bufferingProgress = -1;
     }

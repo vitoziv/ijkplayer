@@ -110,6 +110,8 @@ static void *KVO_AVPlayerItem_playbackBufferEmpty       = &KVO_AVPlayerItem_play
 
 @property(nonatomic, readwrite)  BOOL isPreparedToPlay;
 
+@property (nonatomic, strong) IJKAudioKit *audioKit;
+
 @end
 
 @implementation IJKAVMoviePlayerController {
@@ -177,7 +179,8 @@ static IJKAVMoviePlayerController* instance;
         self.view = _avView;
 
         // TODO:
-        [[IJKAudioKit sharedInstance] setupAudioSession];
+        _audioKit = [IJKAudioKit new];
+        [_audioKit setupAudioSession];
 
         _isPrerolling           = NO;
 
@@ -994,12 +997,12 @@ static IJKAVMoviePlayerController* instance;
                     break;
             }
             [self pause];
-            [[IJKAudioKit sharedInstance] setActive:NO];
+            [self.audioKit setActive:NO];
             break;
         }
         case AVAudioSessionInterruptionTypeEnded: {
             NSLog(@"IJKAVMoviePlayerController:audioSessionInterrupt: end\n");
-            [[IJKAudioKit sharedInstance] setActive:YES];
+            [self.audioKit setActive:YES];
             if (_playingBeforeInterruption) {
                 [self play];
             }
